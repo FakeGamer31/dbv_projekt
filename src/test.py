@@ -32,7 +32,7 @@ def detect_lego_blocks(frame):
     return frame2
 
 # Öffnen Sie die Kamera (0 steht für die Standardkamera, kann angepasst werden)
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(1)
 
 while True:
     # Erfassen Sie ein Frame von der Kamera
