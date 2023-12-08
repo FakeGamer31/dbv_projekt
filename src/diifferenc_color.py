@@ -3,7 +3,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 
 # Bild laden
-image = cv2.imread('../images/image.jpg')
+image = cv2.imread('../images/legos.jpg')
 
 plt.imshow(image[...,::-1], cmap='gray')
 plt.title('Lego Detec')
