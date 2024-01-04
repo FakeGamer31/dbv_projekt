@@ -32,7 +32,8 @@ def detect_lego_blocks(dst,lower, upper, color):
     global kernel_morph
 
     # Grayscale
-    mask = cv2.inRange(cv2.cvtColor(dst, cv2.COLOR_BGR2HSV), lower, upper)
+    # mask = cv2.inRange(cv2.cvtColor(dst, cv2.COLOR_BGR2HSV), lower, upper)
+    mask = cv2.cvtColor(dst, cv2.COLOR_BGR2GRAY)
     cv2.imshow('mask', mask)
 
     # Blur
@@ -50,6 +51,7 @@ def detect_lego_blocks(dst,lower, upper, color):
     cv2.getTrackbarPos('kernel', 'edges')
     # print(kernel_morph)
     # print(g, ' and ',b)
+    print(g)
     edges2 = cv2.Canny(morph2, g, g*3)
     cv2.imshow('edges', edges2)
 
@@ -68,8 +70,9 @@ def detect_lego_blocks(dst,lower, upper, color):
         else:
             compactness = 0
         testaray = np.append(testaray, (area,perimeter,compactness))
-
-        if area > 100 and ((4/np.pi)*0.94) <= compactness <= (((4/np.pi)*1.04)) :  # Beispielgrenze für die Mindestgröße der Kontur
+        print('area: ', area, '   perimeter: ', perimeter, '     compactness: ', compactness )
+        print('')
+        if area > 100 and ((4/np.pi)*0.96) <= compactness <= (((4/np.pi)*1.04)) :  # Beispielgrenze für die Mindestgröße der Kontur
             x, y, w, h = cv2.boundingRect(contour)
             # cv2.rectangle(frame2, (x, y), (x + w, y + h), (180, 255, 50), 2)
             box = np.intp(cv2.boxPoints(cv2.minAreaRect(contour)))
@@ -78,13 +81,13 @@ def detect_lego_blocks(dst,lower, upper, color):
 
 
 color_ranges = {
-    'white': (np.array([0, 0, 200]), np.array([180, 30, 255])),
-    'yellow': (np.array([20, 100, 100]), np.array([40, 255, 255])),
-    'blue': (np.array([100, 100, 100]), np.array([140, 255, 255])),
-    'red': (np.array([0, 100, 100]), np.array([10, 255, 255])),
-    'grey': (np.array([0, 0, 80]), np.array([180, 40, 200])),
-    'green': (np.array([40, 40, 40]), np.array([80, 255, 255])),
-    'black': (np.array([0, 0, 0]), np.array([180, 255, 50])),
+    'white': (np.array([0, 0, 180]), np.array([255, 255, 255])),
+    # 'yellow': (np.array([20, 100, 100]), np.array([40, 255, 255])),
+    # 'blue': (np.array([100, 100, 100]), np.array([140, 255, 255])),
+    # 'red': (np.array([0, 100, 100]), np.array([10, 255, 255])),
+    # 'grey': (np.array([0, 0, 80]), np.array([180, 40, 200])),
+    # 'green': (np.array([40, 40, 40]), np.array([80, 255, 255])),
+    # 'black': (np.array([0, 0, 0]), np.array([180, 255, 50])),
 }
 
 cv2.namedWindow('edges') 
@@ -95,12 +98,18 @@ cv2.createTrackbar('kernel','edges',0,4,change_kernel)
 cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
 cap.set(cv2.CAP_PROP_AUTOFOCUS, 1)
 
-# Erfassen Sie ein Frame von der Kamera
-ret, frame = cap.read()
+## Erfassen Sie ein Frame von der Kamera
+# ret, frame = cap.read()
+# frame_processed = frame.copy()
+
+# # Überprüfen Sie, ob das Frame korrekt erfasst wurde
+# if not ret:
+#     print('Kein Bild')
+
+frame = cv2.imread('../images/test_123.jpg')
 frame_processed = frame.copy()
-# Überprüfen Sie, ob das Frame korrekt erfasst wurde
-if not ret:
-    print('Kein Bild')
+
+
 
 counter = 0
 
