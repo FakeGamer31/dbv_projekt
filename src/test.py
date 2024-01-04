@@ -40,7 +40,7 @@ def detect_lego_blocks(dst,lower, upper, color):
     blurred_image = cv2.GaussianBlur(mask, (3, 3), 0)
     cv2.imshow('blurred', blurred_image)
 
-    # Opening
+    # Morph
     morph2 = cv2.morphologyEx(blurred_image, cv2.MORPH_CLOSE, cv2.getStructuringElement(cv2.MORPH_RECT,(3,3)))
     # erode = cv2.erode(edges, cv2.getStructuringElement(cv2.MORPH_RECT,(1,1)), iterations=100)
     # morph = cv2.dilate(erode, cv2.getStructuringElement(cv2.MORPH_RECT,(1,1)), iterations=1)
@@ -106,10 +106,8 @@ cap.set(cv2.CAP_PROP_AUTOFOCUS, 1)
 # if not ret:
 #     print('Kein Bild')
 
-frame = cv2.imread('../images/test_123.jpg')
+frame = img = cv2.resize(cv2.imread('../images/iris_8_blocks.jpg'), None, fx=0.35, fy=0.35, interpolation=cv2.INTER_LINEAR)
 frame_processed = frame.copy()
-
-
 
 counter = 0
 
