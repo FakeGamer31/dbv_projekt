@@ -17,7 +17,7 @@ while True:
     img = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     
     #Template laden
-    template = cv2.imread("C:/Users/Gunnar/Desktop/7. Semester/Digitale Bildverarbeitung/Templates/erster_test_template.jpg", cv2.IMREAD_GRAYSCALE)
+    template = cv2.imread('F:\Hochschule\DBV\dbv_projekt\src\Templates\erster_test_template.jpg', cv2.IMREAD_GRAYSCALE)
     height, width = template.shape
     
     # # all possible methods
