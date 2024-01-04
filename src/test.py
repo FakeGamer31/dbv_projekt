@@ -32,14 +32,15 @@ def detect_lego_blocks(dst,lower, upper, color):
     global kernel_morph
 
     # Grayscale
-    mask = cv2.inRange(cv2.cvtColor(dst, cv2.COLOR_BGR2HSV), lower, upper)
+    # mask = cv2.inRange(cv2.cvtColor(dst, cv2.COLOR_BGR2HSV), lower, upper)
+    mask = cv2.cvtColor(dst, cv2.COLOR_BGR2GRAY)
     cv2.imshow('mask', mask)
 
     # Blur
     blurred_image = cv2.GaussianBlur(mask, (3, 3), 0)
     cv2.imshow('blurred', blurred_image)
 
-    # Opening
+    # Morph
     morph2 = cv2.morphologyEx(blurred_image, cv2.MORPH_CLOSE, cv2.getStructuringElement(cv2.MORPH_RECT,(3,3)))
     # erode = cv2.erode(edges, cv2.getStructuringElement(cv2.MORPH_RECT,(1,1)), iterations=100)
     # morph = cv2.dilate(erode, cv2.getStructuringElement(cv2.MORPH_RECT,(1,1)), iterations=1)
@@ -79,12 +80,12 @@ def detect_lego_blocks(dst,lower, upper, color):
 
 color_ranges = {
     'white': (np.array([0, 0, 200]), np.array([180, 30, 255])),
-    'yellow': (np.array([20, 100, 100]), np.array([40, 255, 255])),
-    'blue': (np.array([100, 100, 100]), np.array([140, 255, 255])),
-    'red': (np.array([0, 100, 100]), np.array([10, 255, 255])),
-    'grey': (np.array([0, 0, 80]), np.array([180, 40, 200])),
-    'green': (np.array([40, 40, 40]), np.array([80, 255, 255])),
-    'black': (np.array([0, 0, 0]), np.array([180, 255, 50])),
+    # 'yellow': (np.array([20, 100, 100]), np.array([40, 255, 255])),
+    # 'blue': (np.array([100, 100, 100]), np.array([140, 255, 255])),
+    # 'red': (np.array([0, 100, 100]), np.array([10, 255, 255])),
+    # 'grey': (np.array([0, 0, 80]), np.array([180, 40, 200])),
+    # 'green': (np.array([40, 40, 40]), np.array([80, 255, 255])),
+    # 'black': (np.array([0, 0, 0]), np.array([180, 255, 50])),
 }
 
 cv2.namedWindow('edges') 
@@ -96,11 +97,14 @@ cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
 cap.set(cv2.CAP_PROP_AUTOFOCUS, 1)
 
 # Erfassen Sie ein Frame von der Kamera
-ret, frame = cap.read()
+# ret, frame = cap.read()
+# frame_processed = frame.copy()
+# # Überprüfen Sie, ob das Frame korrekt erfasst wurde
+# if not ret:
+#     print('Kein Bild')
+
+frame = img = cv2.resize(cv2.imread('../images/iris_8_blocks.jpg'), None, fx=0.35, fy=0.35, interpolation=cv2.INTER_LINEAR)
 frame_processed = frame.copy()
-# Überprüfen Sie, ob das Frame korrekt erfasst wurde
-if not ret:
-    print('Kein Bild')
 
 counter = 0
 
