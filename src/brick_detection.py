@@ -104,15 +104,16 @@ def detect_lego_blocks(dst, org_img, lower, upper, color):
         testaray = np.append(testaray, (area,circumference,compactness))
         print('area: ', area, '   perimeter: ', circumference, '     compactness: ', compactness )
         print('')
-        if area > 500 and ((4/np.pi)*0.8) <= compactness <= (((4/np.pi)*1.2)) :  # Beispielgrenze für die Mindestgröße der Kontur
-        # if 576*0.9 <= area <= 576*1.1:  # Beispielgrenze für die Mindestgröße der Kontur
-            brick_list.append(Brick(area=area, circumference=circumference, color=color,original_image=org_img,number=index_counter+1))
+        # if area > 500 and ((4/np.pi)*0.8) <= compactness <= (((4/np.pi)*1.2)) :  # Beispielgrenze für die Mindestgröße der Kontur
+        if 576*0.9 <= area <= 576*1.1:  # Beispielgrenze für die Mindestgröße der Kontur
             print(f'perimeter: {circumference}')
             x, y, w, h = cv2.boundingRect(contour)
             # cv2.rectangle(frame2, (x, y), (x + w, y + h), (180, 255, 50), 2)
+            dominant_color = utils.dominant_color_from_roi(org_image=org_img, contour=contour)
             box = np.intp(cv2.boxPoints(cv2.minAreaRect(contour)))
-            cv2.drawContours(org_img, [box], 0, (0,255,0), 2)
-            cv2.putText(org_img,f'# {index_counter+1} {color}' , (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (255,255,255), 0, cv2.LINE_AA)
+            brick_list.append(Brick(area=area, circumference=circumference, color_code=dominant_color, original_image=org_img, number=index_counter+1))
+            cv2.drawContours(org_img, [box], 0, (0,255,0), 1)
+            cv2.putText(org_img,f'# {index_counter+1} {brick_list[index_counter].color_str}' , (x - 10, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (255,255,255), 0, cv2.LINE_AA)
             index_counter += 1
     # print('stop##########################################')
     return brick_list

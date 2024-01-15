@@ -1,4 +1,5 @@
 import cv2
+import numpy as np
 
 def automatic_brithness_and_contrast(image, clip_hist_percent=1):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -71,3 +72,46 @@ def resize_image(image, target_width=640, target_height=480):
     resized_image = cv2.resize(image, (new_width, new_height))
 
     return resized_image
+
+
+def dominant_color_from_roi(org_image, contour): 
+      # 1. Extrahieren Sie den Bereich des Bildes
+            rect = cv2.minAreaRect(contour)
+            box2 = cv2.boxPoints(rect)
+            box2 = np.int0(box2)
+
+            # Erstellen Sie eine Maske für den Bereich innerhalb des Rechtecks
+            mask = np.zeros_like(org_image)
+            cv2.drawContours(mask, [box2], 0, (255, 255, 255), thickness=cv2.FILLED)
+
+            # Extrahieren Sie den Bereich des Bildes innerhalb des Rechtecks
+            roi = cv2.bitwise_and(org_image, mask)
+            cv2.imshow('roi', roi) #hier ist nur  noch der block vlt nutzen für die farbe
+
+            gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
+            _, thresh = cv2.threshold(gray, 1, 255, cv2.THRESH_BINARY)
+            contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+            largest_contour_area = 0
+            prev_largest_contour_area = 0
+            largest_contour = 0
+            prev_largest_contour = 0
+            if len(contours) != 0:
+                for contour in contours:
+                    # find the biggest countour (c) by the area
+                    largest_contour_area = cv2.contourArea(contour)
+                    largest_contour = contour
+                    if prev_largest_contour_area < largest_contour_area:
+                        prev_largest_contour_area = largest_contour_area
+                        prev_largest_contour = largest_contour
+                # Größte Kontur (Annahme: Das Objekt ist die größte Kontur)
+            largest_contour = prev_largest_contour
+
+            # Maske für das Objekt erstellen
+            mask = np.zeros_like(roi)
+            cv2.drawContours(mask, [largest_contour], 0, (255, 255, 255), thickness=cv2.FILLED)
+
+            # Dominante Farbe bestimmen# Dominante Farbe bestimmen
+            dominant_color = np.median(roi[mask == 255].reshape(-1, 3), axis=0)
+
+            return dominant_color
