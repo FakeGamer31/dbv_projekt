@@ -45,7 +45,7 @@ def change_kernel_blur(x):
 
 
 # Funktion für die Objekterkennung
-def detect_lego_blocks(dst, org_img, lower, upper, color):
+def detect_lego_blocks(dst, org_img):
     global g
     global kernel_morph
     global kernel_blur
@@ -119,17 +119,6 @@ def detect_lego_blocks(dst, org_img, lower, upper, color):
     return brick_list
 
 
-color_ranges = {    
-    '-': (np.array([0, 0, 0]), np.array([0, 0, 0])),
-    # 'white': (np.array([0, 0, 180]), np.array([255, 255, 255])),
-    # 'yellow': (np.array([20, 100, 100]), np.array([40, 255, 255])),
-    # 'blue': (np.array([100, 100, 100]), np.array([140, 255, 255])),
-    # 'red': (np.array([0, 100, 100]), np.array([10, 255, 255])),
-    # 'grey': (np.array([0, 0, 80]), np.array([180, 40, 200])),
-    # 'green': (np.array([40, 40, 40]), np.array([80, 255, 255])),
-    # 'black': (np.array([0, 0, 0]), np.array([180, 255, 50])),
-}
-
 cv2.namedWindow('edges') 
 cv2.namedWindow('blurred') 
 cv2.createTrackbar('min','edges',102,255,something)
@@ -157,9 +146,8 @@ while True:
     frame = utils.resize_image(frame)
     frame_processed = org_img.copy()
 
-    for color, (lower, upper) in color_ranges.items():
-        # Objekterkennung auf dem aktuellen Frame durchführen
-        brick_list = detect_lego_blocks(frame, frame_processed, lower, upper, color)
+    # Objekterkennung auf dem aktuellen Frame durchführen
+    brick_list = detect_lego_blocks(frame, frame_processed)
 
     # Zeigen Sie das Original- und das bearbeitete Frame an
     cv2.imshow('Original', org_img)
