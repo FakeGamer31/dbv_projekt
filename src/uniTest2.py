@@ -124,9 +124,9 @@ class Ui_BrickDetector(QtWidgets.QMainWindow):
         self.focus_label.setBuddy(self.focus_slider)
         self.contrast_label.setBuddy(self.focus_slider)
         self.brithness_label.setBuddy(self.focus_slider)        
-        self.timer = QtCore.QTimer(self)
-        self.timer.timeout.connect(detector.loop)
-        self.timer.start(30)  # Aktualisiere alle 30 Millisekunden
+        # self.timer = QtCore.QTimer(self)
+        # self.timer.timeout.connect(detector.loop)
+        # self.timer.start(30)  # Aktualisiere alle 30 Millisekunden
 
         self.retranslateUi()
         self.autofocus_checkbox.toggled['bool'].connect(self.focus_slider.setEnabled) # type: ignore

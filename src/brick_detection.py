@@ -131,17 +131,18 @@ cv2.createTrackbar('blur_sigma','blurred',2,15,something)
 cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
 cap.set(cv2.CAP_PROP_AUTOFOCUS, 1)
 
-## Erfassen Sie ein Frame von der Kamera
-# ret, frame = cap.read()
-# frame_processed = frame.copy()
 
-# # Überprüfen Sie, ob das Frame korrekt erfasst wurde
-# if not ret:
-#     print('Kein Bild')
 show_list = True
 brick_list = []
 while True:
-    org_img = cv2.imread('../images/newest/legos_top_view.jpg')
+    ## Erfassen Sie ein Frame von der Kamera
+    ret, org_img = cap.read()
+    frame_processed = org_img.copy()
+
+    # Überprüfen Sie, ob das Frame korrekt erfasst wurde
+    if not ret:
+        print('Kein Bild')
+    # org_img = cv2.imread('../images/newest/legos_top_view.jpg')
     frame, _, _  = utils.automatic_brithness_and_contrast(org_img,1)
     frame = utils.resize_image(frame)
     frame_processed = org_img.copy()
