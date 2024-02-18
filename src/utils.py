@@ -55,15 +55,15 @@ def resize_image(image, target_width=640, target_height=480):
     
     # Bestimme, ob die Breite oder Höhe die Grenze überschreitet
     if width > target_width:
-        print(f'width bigger than target width {width}')
+        # print(f'width bigger than target width {width}')
         new_width = target_width
         new_height = int(new_width / aspect_ratio)
     elif height > target_height:
-        print('height bigger than target height')
+        # print('height bigger than target height')
         new_height = target_height
         new_width = int(new_height * aspect_ratio)
     else:
-        print('image same')
+        # print('image same')
         # Das Bild ist bereits kleiner als die Zielgröße
         return image
 
@@ -86,7 +86,7 @@ def dominant_color_from_roi(org_image, contour):
 
             # Extrahieren Sie den Bereich des Bildes innerhalb des Rechtecks
             roi = cv2.bitwise_and(org_image, mask)
-            cv2.imshow('roi', roi) #hier ist nur  noch der block vlt nutzen für die farbe
+            # cv2.imshow('roi', roi) #hier ist nur  noch der block vlt nutzen für die farbe
 
             gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
             _, thresh = cv2.threshold(gray, 1, 255, cv2.THRESH_BINARY)
