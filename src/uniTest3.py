@@ -11,14 +11,13 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
-class Ui_BrickDetector(QtWidgets.QMainWindow):
-    def setupUi(self, detector):
-        self.detector = detector
-        self.setObjectName("BrickDetector")
-        self.resize(960, 720)
-        self.setMinimumSize(QtCore.QSize(960, 720))
-        self.setMaximumSize(QtCore.QSize(960, 720))
-        self.centralwidget = QtWidgets.QWidget(self)
+class Ui_BrickDetector(object):
+    def setupUi(self, BrickDetector):
+        BrickDetector.setObjectName("BrickDetector")
+        BrickDetector.resize(960, 720)
+        BrickDetector.setMinimumSize(QtCore.QSize(960, 720))
+        BrickDetector.setMaximumSize(QtCore.QSize(960, 720))
+        self.centralwidget = QtWidgets.QWidget(BrickDetector)
         self.centralwidget.setEnabled(True)
         self.centralwidget.setObjectName("centralwidget")
         self.camera_settings_box = QtWidgets.QGroupBox(self.centralwidget)
@@ -44,7 +43,7 @@ class Ui_BrickDetector(QtWidgets.QMainWindow):
         self.static_radio = QtWidgets.QRadioButton(self.camera_settings_box)
         self.static_radio.setGeometry(QtCore.QRect(10, 224, 82, 17))
         self.static_radio.setObjectName("static_radio")
-        self.image_mode_grpup = QtWidgets.QButtonGroup(self)
+        self.image_mode_grpup = QtWidgets.QButtonGroup(BrickDetector)
         self.image_mode_grpup.setObjectName("image_mode_grpup")
         self.image_mode_grpup.addButton(self.static_radio)
         self.live_radio = QtWidgets.QRadioButton(self.camera_settings_box)
@@ -99,25 +98,25 @@ class Ui_BrickDetector(QtWidgets.QMainWindow):
         self.search_button = QtWidgets.QPushButton(self.centralwidget)
         self.search_button.setGeometry(QtCore.QRect(260, 520, 101, 51))
         self.search_button.setObjectName("search_button")
-        self.setCentralWidget(self.centralwidget)
-        self.menubar = QtWidgets.QMenuBar(self)
+        BrickDetector.setCentralWidget(self.centralwidget)
+        self.menubar = QtWidgets.QMenuBar(BrickDetector)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 960, 21))
         self.menubar.setObjectName("menubar")
         self.menuFile = QtWidgets.QMenu(self.menubar)
         self.menuFile.setObjectName("menuFile")
         self.menuAbout = QtWidgets.QMenu(self.menubar)
         self.menuAbout.setObjectName("menuAbout")
-        self.setMenuBar(self.menubar)
-        self.statusbar = QtWidgets.QStatusBar(self)
+        BrickDetector.setMenuBar(self.menubar)
+        self.statusbar = QtWidgets.QStatusBar(BrickDetector)
         self.statusbar.setObjectName("statusbar")
-        self.setStatusBar(self.statusbar)
-        self.actionOpen = QtWidgets.QAction(self)
+        BrickDetector.setStatusBar(self.statusbar)
+        self.actionOpen = QtWidgets.QAction(BrickDetector)
         self.actionOpen.setObjectName("actionOpen")
-        self.actionSave = QtWidgets.QAction(self)
+        self.actionSave = QtWidgets.QAction(BrickDetector)
         self.actionSave.setObjectName("actionSave")
-        self.actionAbout = QtWidgets.QAction(self)
+        self.actionAbout = QtWidgets.QAction(BrickDetector)
         self.actionAbout.setObjectName("actionAbout")
-        self.actionHow_to_use = QtWidgets.QAction(self)
+        self.actionHow_to_use = QtWidgets.QAction(BrickDetector)
         self.actionHow_to_use.setObjectName("actionHow_to_use")
         self.menuFile.addAction(self.actionOpen)
         self.menuFile.addAction(self.actionSave)
@@ -127,23 +126,16 @@ class Ui_BrickDetector(QtWidgets.QMainWindow):
         self.menubar.addAction(self.menuAbout.menuAction())
         self.focus_label.setBuddy(self.focus_slider)
         self.contrast_label.setBuddy(self.focus_slider)
-        self.brithness_label.setBuddy(self.focus_slider)        
-        self.timer = QtCore.QTimer(self)
-        self.timer.timeout.connect(detector.loop)
-        self.timer.start(30)  # Aktualisiere alle 30 Millisekunden
+        self.brithness_label.setBuddy(self.focus_slider)
 
-        self.retranslateUi()
+        self.retranslateUi(BrickDetector)
         self.autofocus_checkbox.toggled['bool'].connect(self.focus_slider.setEnabled) # type: ignore
         self.autofocus_checkbox.toggled['bool'].connect(self.focus_slider.setDisabled) # type: ignore
-        self.search_button.clicked['bool'].connect(self.startDetection)
-        QtCore.QMetaObject.connectSlotsByName(self)
+        QtCore.QMetaObject.connectSlotsByName(BrickDetector)
 
-    def startDetection(self):
-        self.detector.show_brick_list = True
-
-    def retranslateUi(self):
+    def retranslateUi(self, BrickDetector):
         _translate = QtCore.QCoreApplication.translate
-        self.setWindowTitle(_translate("BrickDetector", "MainWindow"))
+        BrickDetector.setWindowTitle(_translate("BrickDetector", "MainWindow"))
         self.camera_settings_box.setTitle(_translate("BrickDetector", "Camera settings"))
         self.focus_label.setText(_translate("BrickDetector", "Focus"))
         self.autofocus_checkbox.setText(_translate("BrickDetector", "Autofocus"))

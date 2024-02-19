@@ -35,16 +35,19 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>700</x>
+      <x>680</x>
       <y>30</y>
-      <width>231</width>
-      <height>171</height>
+      <width>251</width>
+      <height>251</height>
      </rect>
     </property>
     <property name="title">
      <string>Camera settings</string>
     </property>
     <widget class="QSlider" name="focus_slider">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -97,12 +100,15 @@
      <property name="text">
       <string>Autofocus</string>
      </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
     </widget>
     <widget class="QRadioButton" name="static_radio">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>130</y>
+       <y>224</y>
        <width>82</width>
        <height>17</height>
       </rect>
@@ -118,7 +124,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>110</y>
+       <y>204</y>
        <width>82</width>
        <height>17</height>
       </rect>
@@ -137,13 +143,95 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>90</y>
+       <y>184</y>
        <width>81</width>
        <height>16</height>
       </rect>
      </property>
      <property name="text">
       <string>Image mode</string>
+     </property>
+    </widget>
+    <widget class="QSlider" name="contrast_slider">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>110</y>
+       <width>181</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="mouseTracking">
+      <bool>false</bool>
+     </property>
+     <property name="maximum">
+      <number>255</number>
+     </property>
+     <property name="singleStep">
+      <number>5</number>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="tickPosition">
+      <enum>QSlider::TicksAbove</enum>
+     </property>
+    </widget>
+    <widget class="QLabel" name="contrast_label">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>90</y>
+       <width>47</width>
+       <height>13</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Contrast</string>
+     </property>
+     <property name="buddy">
+      <cstring>focus_slider</cstring>
+     </property>
+    </widget>
+    <widget class="QLabel" name="brithness_label">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>140</y>
+       <width>47</width>
+       <height>13</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Brithness</string>
+     </property>
+     <property name="buddy">
+      <cstring>focus_slider</cstring>
+     </property>
+    </widget>
+    <widget class="QSlider" name="brithness_slider">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>160</y>
+       <width>181</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="mouseTracking">
+      <bool>false</bool>
+     </property>
+     <property name="maximum">
+      <number>255</number>
+     </property>
+     <property name="singleStep">
+      <number>5</number>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="tickPosition">
+      <enum>QSlider::TicksAbove</enum>
      </property>
     </widget>
    </widget>
@@ -195,6 +283,38 @@
     </property>
     <property name="scaledContents">
      <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QTextEdit" name="brick_list_text_area">
+    <property name="geometry">
+     <rect>
+      <x>680</x>
+      <y>290</y>
+      <width>256</width>
+      <height>361</height>
+     </rect>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
+    <property name="overwriteMode">
+     <bool>false</bool>
+    </property>
+    <property name="placeholderText">
+     <string>Bricklist:</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="search_button">
+    <property name="geometry">
+     <rect>
+      <x>260</x>
+      <y>520</y>
+      <width>101</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Search</string>
     </property>
    </widget>
   </widget>
@@ -281,6 +401,9 @@
    </hints>
   </connection>
  </connections>
+ <slots>
+  <slot>openFile()</slot>
+ </slots>
  <buttongroups>
   <buttongroup name="image_mode_grpup"/>
  </buttongroups>

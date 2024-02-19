@@ -23,7 +23,7 @@ class BrickDetector(object):
         self.image_mode = ImageMode.live
         self.brick_list = ""
         self.ui = ui
-        self.show_brick_list = True
+        self.show_brick_list = False
         pass
 
     def detect_blocks(self):
@@ -56,9 +56,11 @@ class BrickDetector(object):
                 brick_list.append(Brick(area=area, circumference=circumfurence, color_code=dominant_color, original_image=self.processed_frame, number=brick_counter + 1))
                 cv2.drawContours(self.processed_frame, [box], 0, (0,255,0), 1)
                 cv2.putText(self.processed_frame, f'# {brick_counter+1} {brick_list[brick_counter].color_str}', (x-10,y-10), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (255,255,255), 0, cv2.LINE_AA)
+                brick_counter = brick_counter + 1
         return brick_list
     
     def loop(self, image_path=""): #rename
+        print(self.show_brick_list)
         brick_list = []
         if self.image_mode == ImageMode.static:
             self.org_frame = cv2.imread(image_path)
@@ -81,6 +83,7 @@ class BrickDetector(object):
                 pass
             self.frame, _, _ = utils.automatic_brithness_and_contrast(self.org_frame,1)
             self.frame = utils.resize_image(self.frame)
+            # if self.show_brick_list:
             self.processed_frame = self.frame.copy()
             brick_list = self.detect_blocks()
 
@@ -90,11 +93,14 @@ class BrickDetector(object):
             self.ui.video_image_label.setPixmap(pixmap)
             
             if len(brick_list) < 1 and self.show_brick_list:
+                self.brick_list = ""
                 self.ui.brick_list_text_area.setPlainText('No bricks')    
-            else:
+            elif self.show_brick_list:                
+                self.brick_list = ""
                 for brick in brick_list:
                     self.brick_list = self.brick_list + f'{str(brick)}\n'
                 self.ui.brick_list_text_area.setPlainText(self.brick_list)
+                self.show_brick_list = False
 
         else:
             print('Fehler, kein image mode ausgewählt')
