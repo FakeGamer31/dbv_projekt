@@ -163,7 +163,7 @@ class Brick:
             self.type = "Unknown"
 
         blue, green, red = self.color_code
-        print(f'number: {self.number} and color code: {self.color_code}')
+        # print(f'number: {self.number} and color code: {self.color_code}')
         self.color_str = self.__convert_rgb_to_names((red, green, blue))
 
     def __str__(self):

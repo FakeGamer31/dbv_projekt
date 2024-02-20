@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from uniTest2 import Ui_BrickDetector
+from ui import Ui_BrickDetector
 from model.camera import BrickDetector
 
 import sys

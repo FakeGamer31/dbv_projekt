@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '..\uiTest.ui'
+# Form implementation generated from reading ui file 'uiTest.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.9
 #
@@ -9,6 +9,8 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+
+import re
 
 
 class Ui_BrickDetector(QtWidgets.QMainWindow):
@@ -63,20 +65,36 @@ class Ui_BrickDetector(QtWidgets.QMainWindow):
         self.contrast_slider.setOrientation(QtCore.Qt.Horizontal)
         self.contrast_slider.setTickPosition(QtWidgets.QSlider.TicksAbove)
         self.contrast_slider.setObjectName("contrast_slider")
+        self.contrast_slider.setValue(128)
         self.contrast_label = QtWidgets.QLabel(self.camera_settings_box)
         self.contrast_label.setGeometry(QtCore.QRect(10, 90, 47, 13))
         self.contrast_label.setObjectName("contrast_label")
-        self.brithness_label = QtWidgets.QLabel(self.camera_settings_box)
-        self.brithness_label.setGeometry(QtCore.QRect(10, 140, 47, 13))
-        self.brithness_label.setObjectName("brithness_label")
-        self.brithness_slider = QtWidgets.QSlider(self.camera_settings_box)
-        self.brithness_slider.setGeometry(QtCore.QRect(10, 160, 181, 22))
-        self.brithness_slider.setMouseTracking(False)
-        self.brithness_slider.setMaximum(255)
-        self.brithness_slider.setSingleStep(5)
-        self.brithness_slider.setOrientation(QtCore.Qt.Horizontal)
-        self.brithness_slider.setTickPosition(QtWidgets.QSlider.TicksAbove)
-        self.brithness_slider.setObjectName("brithness_slider")
+        self.brigthness_label = QtWidgets.QLabel(self.camera_settings_box)
+        self.brigthness_label.setGeometry(QtCore.QRect(10, 140, 47, 13))
+        self.brigthness_label.setObjectName("brithness_label")
+        self.brigthness_slider = QtWidgets.QSlider(self.camera_settings_box)
+        self.brigthness_slider.setGeometry(QtCore.QRect(10, 160, 181, 22))
+        self.brigthness_slider.setMouseTracking(False)
+        self.brigthness_slider.setMaximum(255)
+        self.brigthness_slider.setSingleStep(5)
+        self.brigthness_slider.setOrientation(QtCore.Qt.Horizontal)
+        self.brigthness_slider.setTickPosition(QtWidgets.QSlider.TicksAbove)
+        self.brigthness_slider.setObjectName("brithness_slider")
+        self.brigthness_slider.setValue(128)
+        self.focus_line_edit = QtWidgets.QLineEdit(self.camera_settings_box)
+        self.focus_line_edit.setMaxLength(3)
+        self.focus_line_edit.setGeometry(QtCore.QRect(200, 60, 31, 20))
+        self.focus_line_edit.setObjectName("focus_line_edit")
+        self.focus_line_edit.setReadOnly(True)
+        self.contrast_line_edit = QtWidgets.QLineEdit(self.camera_settings_box)
+        self.contrast_line_edit.setGeometry(QtCore.QRect(200, 110, 31, 20))
+        self.contrast_line_edit.setMaxLength(3)
+        self.contrast_line_edit.setObjectName("contrast_line_edit")
+        self.brigthness_line_edit = QtWidgets.QLineEdit(self.camera_settings_box)
+        self.brigthness_line_edit.setGeometry(QtCore.QRect(200, 160, 31, 20))
+        self.brigthness_line_edit.setMaxLength(3)
+        self.brigthness_line_edit.setClearButtonEnabled(False)
+        self.brigthness_line_edit.setObjectName("brithness_line_edit")
         self.buttonBox = QtWidgets.QDialogButtonBox(self.centralwidget)
         self.buttonBox.setGeometry(QtCore.QRect(830, 530, 341, 41))
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
@@ -88,16 +106,16 @@ class Ui_BrickDetector(QtWidgets.QMainWindow):
         self.video_image_label.setMinimumSize(QtCore.QSize(640, 480))
         self.video_image_label.setMaximumSize(QtCore.QSize(640, 480))
         self.video_image_label.setText("")
-        self.video_image_label.setPixmap(QtGui.QPixmap("..\\images/12-13-2023 11_41_31.jpg"))
+        self.video_image_label.setPixmap(QtGui.QPixmap("images/12-13-2023 11_41_31.jpg"))
         self.video_image_label.setScaledContents(True)
         self.video_image_label.setObjectName("video_image_label")
         self.brick_list_text_area = QtWidgets.QTextEdit(self.centralwidget)
-        self.brick_list_text_area.setGeometry(QtCore.QRect(680, 290, 256, 361))
+        self.brick_list_text_area.setGeometry(QtCore.QRect(5, 510, 951, 161))
         self.brick_list_text_area.setReadOnly(True)
         self.brick_list_text_area.setOverwriteMode(False)
         self.brick_list_text_area.setObjectName("brick_list_text_area")
         self.search_button = QtWidgets.QPushButton(self.centralwidget)
-        self.search_button.setGeometry(QtCore.QRect(260, 520, 101, 51))
+        self.search_button.setGeometry(QtCore.QRect(750, 290, 101, 51))
         self.search_button.setObjectName("search_button")
         self.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(self)
@@ -127,16 +145,73 @@ class Ui_BrickDetector(QtWidgets.QMainWindow):
         self.menubar.addAction(self.menuAbout.menuAction())
         self.focus_label.setBuddy(self.focus_slider)
         self.contrast_label.setBuddy(self.focus_slider)
-        self.brithness_label.setBuddy(self.focus_slider)
+        self.brigthness_label.setBuddy(self.focus_slider)
         self.timer = QtCore.QTimer(self)
         self.timer.timeout.connect(detector.loop)
         self.timer.start(30)  # Aktualisiere alle 30 Millisekunden
 
         self.retranslateUi()
-        self.autofocus_checkbox.toggled['bool'].connect(self.focus_slider.setEnabled) # type: ignore
-        self.autofocus_checkbox.toggled['bool'].connect(self.focus_slider.setDisabled) # type: ignore
         self.search_button.clicked['bool'].connect(self.startDetection)
+
+        self.autofocus_checkbox.stateChanged.connect(self.disable_enable_autofocus_slider)
+        self.autofocus_checkbox.stateChanged.connect(self.toggle_autofocus)
+
+        self.focus_slider.valueChanged.connect(self.set_slider_values)
+        self.contrast_slider.valueChanged.connect(self.set_slider_values)
+        self.brigthness_slider.valueChanged.connect(self.set_slider_values)
+
+        self.focus_line_edit.textEdited.connect(self.set_box_values)
+        self.contrast_line_edit.textEdited.connect(self.set_box_values)
+        self.brigthness_line_edit.textEdited.connect(self.set_box_values)
         QtCore.QMetaObject.connectSlotsByName(self)
+
+    def disable_enable_autofocus_slider(self):
+        if (self.autofocus_checkbox.checkState() == 0):
+            self.focus_slider.setEnabled(True)
+            self.focus_line_edit.setReadOnly(False)
+        else:
+            self.focus_slider.setDisabled(True)
+            self.focus_line_edit.setReadOnly(True)
+
+
+    def set_slider_values(self):
+        self.detector.focus = self.focus_slider.value()
+        self.detector.brithness = self.brigthness_slider.value()
+        self.detector.contrast = self.contrast_slider.value()
+
+        self.focus_line_edit.setText(str(self.focus_slider.value()))
+        self.brigthness_line_edit.setText(str(self.brigthness_slider.value()))
+        self.contrast_line_edit.setText(str(self.contrast_slider.value()))
+
+    def set_box_values(self):
+        if (re.search("^(?:25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})?$", self.focus_line_edit.text())):
+            if (self.focus_line_edit.text() == ''):
+                self.focus_slider.setValue(0)
+            else:
+                self.focus_slider.setValue(int(self.focus_line_edit.text()))
+        else:
+            self.focus_slider.setValue(0)
+            
+        if (re.search("^(?:25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})?$", self.brigthness_line_edit.text())):
+            if (self.brigthness_line_edit.text() == ''):
+                self.brigthness_slider.setValue(0)
+            else:
+                self.brigthness_slider.setValue(int(self.brigthness_line_edit.text()))
+        else:
+            self.brigthness_slider.setValue(0)
+                
+        if (re.search("^(?:25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})?$", self.contrast_line_edit.text())):
+            if (self.contrast_line_edit.text() == ''):
+                self.contrast_slider.setValue(0)
+            else:
+                self.contrast_slider.setValue(int(self.contrast_line_edit.text()))
+        else:
+            self.contrast_slider.setValue(0)
+           
+            
+
+    def toggle_autofocus(self):
+        self.detector.autofocus = self.autofocus_checkbox.isChecked()
 
     def startDetection(self):
         self.detector.show_brick_list = True
@@ -151,7 +226,10 @@ class Ui_BrickDetector(QtWidgets.QMainWindow):
         self.live_radio.setText(_translate("BrickDetector", "Live"))
         self.image_label.setText(_translate("BrickDetector", "Image mode"))
         self.contrast_label.setText(_translate("BrickDetector", "Contrast"))
-        self.brithness_label.setText(_translate("BrickDetector", "Brithness"))
+        self.brigthness_label.setText(_translate("BrickDetector", "Brithness"))
+        self.focus_line_edit.setText(_translate("BrickDetector", "128"))
+        self.contrast_line_edit.setText(_translate("BrickDetector", "128"))
+        self.brigthness_line_edit.setText(_translate("BrickDetector", "128"))
         self.brick_list_text_area.setPlaceholderText(_translate("BrickDetector", "Bricklist:"))
         self.search_button.setText(_translate("BrickDetector", "Search"))
         self.menuFile.setTitle(_translate("BrickDetector", "File"))
@@ -162,11 +240,11 @@ class Ui_BrickDetector(QtWidgets.QMainWindow):
         self.actionHow_to_use.setText(_translate("BrickDetector", "How to use"))
 
 
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    BrickDetector = QtWidgets.QMainWindow()
-    ui = Ui_BrickDetector()
-    ui.setupUi(BrickDetector)
-    BrickDetector.show()
-    sys.exit(app.exec_())
+# if __name__ == "__main__":
+#     import sys
+#     app = QtWidgets.QApplication(sys.argv)
+#     BrickDetector = QtWidgets.QMainWindow()
+#     ui = Ui_BrickDetector()
+#     ui.setupUi(BrickDetector)
+#     BrickDetector.show()
+#     sys.exit(app.exec_())

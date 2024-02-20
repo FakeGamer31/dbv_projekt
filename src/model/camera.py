@@ -18,8 +18,8 @@ class BrickDetector(object):
         self.processed_frame = None
         self.autofocus = 1
         self.focus = 0
-        self.brithness = 0
-        self.contrast = 0
+        self.brithness = 128
+        self.contrast = 128
         self.image_mode = ImageMode.live
         self.brick_list = ""
         self.ui = ui
@@ -60,8 +60,8 @@ class BrickDetector(object):
         return brick_list
     
     def loop(self, image_path=""): #rename
-        print(self.show_brick_list)
-        brick_list = []
+        brick_list = []   
+        self.set_settings()
         if self.image_mode == ImageMode.static:
             self.org_frame = cv2.imread(image_path)
             self.frame, _, _ = utils.automatic_brithness_and_contrast(self.org_frame,1)
@@ -74,16 +74,13 @@ class BrickDetector(object):
             pixmap = QtGui.QPixmap.fromImage(q_image)
             self.ui.video_image_label.setPixmap(pixmap)
 
-            # self.brick_list = brick_list
-
-        elif self.image_mode == ImageMode.live:
+        elif self.image_mode == ImageMode.live:        
             ret, self.org_frame = self.videoCapture.read()
             if not ret:
                 print('Kein Bild')
                 pass
             self.frame, _, _ = utils.automatic_brithness_and_contrast(self.org_frame,1)
             self.frame = utils.resize_image(self.frame)
-            # if self.show_brick_list:
             self.processed_frame = self.frame.copy()
             brick_list = self.detect_blocks()
 
@@ -95,7 +92,7 @@ class BrickDetector(object):
             if len(brick_list) < 1 and self.show_brick_list:
                 self.brick_list = ""
                 self.ui.brick_list_text_area.setPlainText('No bricks')    
-            elif self.show_brick_list:                
+            elif self.show_brick_list:            
                 self.brick_list = ""
                 for brick in brick_list:
                     self.brick_list = self.brick_list + f'{str(brick)}\n'
@@ -104,3 +101,12 @@ class BrickDetector(object):
 
         else:
             print('Fehler, kein image mode ausgewählt')
+    
+    def set_settings(self):    
+            self.videoCapture.set(cv2.CAP_PROP_BRIGHTNESS,self.brithness)
+            self.videoCapture.set(cv2.CAP_PROP_CONTRAST,self.contrast)
+            if (self.autofocus):
+                self.videoCapture.set(cv2.CAP_PROP_AUTOFOCUS,1)
+            else:
+                self.videoCapture.set(cv2.CAP_PROP_AUTOFOCUS,0)
+                self.videoCapture.set(cv2.CAP_PROP_FOCUS,self.focus)     
