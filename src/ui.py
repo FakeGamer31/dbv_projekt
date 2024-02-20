@@ -9,8 +9,11 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from model.camera import ImageMode
 
+import numpy as np
 import re
+import cv2
 
 
 class Ui_BrickDetector(QtWidgets.QMainWindow):
@@ -46,14 +49,14 @@ class Ui_BrickDetector(QtWidgets.QMainWindow):
         self.static_radio = QtWidgets.QRadioButton(self.camera_settings_box)
         self.static_radio.setGeometry(QtCore.QRect(10, 224, 82, 17))
         self.static_radio.setObjectName("static_radio")
-        self.image_mode_grpup = QtWidgets.QButtonGroup(self)
-        self.image_mode_grpup.setObjectName("image_mode_grpup")
-        self.image_mode_grpup.addButton(self.static_radio)
+        self.image_mode_group = QtWidgets.QButtonGroup(self)
+        self.image_mode_group.setObjectName("image_mode_group")
+        self.image_mode_group.addButton(self.static_radio)
         self.live_radio = QtWidgets.QRadioButton(self.camera_settings_box)
         self.live_radio.setGeometry(QtCore.QRect(10, 204, 82, 17))
         self.live_radio.setChecked(True)
         self.live_radio.setObjectName("live_radio")
-        self.image_mode_grpup.addButton(self.live_radio)
+        self.image_mode_group.addButton(self.live_radio)
         self.image_label = QtWidgets.QLabel(self.camera_settings_box)
         self.image_label.setGeometry(QtCore.QRect(10, 184, 81, 16))
         self.image_label.setObjectName("image_label")
@@ -131,14 +134,11 @@ class Ui_BrickDetector(QtWidgets.QMainWindow):
         self.setStatusBar(self.statusbar)
         self.actionOpen = QtWidgets.QAction(self)
         self.actionOpen.setObjectName("actionOpen")
-        self.actionSave = QtWidgets.QAction(self)
-        self.actionSave.setObjectName("actionSave")
         self.actionAbout = QtWidgets.QAction(self)
         self.actionAbout.setObjectName("actionAbout")
         self.actionHow_to_use = QtWidgets.QAction(self)
         self.actionHow_to_use.setObjectName("actionHow_to_use")
         self.menuFile.addAction(self.actionOpen)
-        self.menuFile.addAction(self.actionSave)
         self.menuAbout.addAction(self.actionAbout)
         self.menuAbout.addAction(self.actionHow_to_use)
         self.menubar.addAction(self.menuFile.menuAction())
@@ -153,6 +153,8 @@ class Ui_BrickDetector(QtWidgets.QMainWindow):
         self.retranslateUi()
         self.search_button.clicked['bool'].connect(self.startDetection)
 
+        self.live_radio.toggled['bool'].connect(self.set_image_mode)
+
         self.autofocus_checkbox.stateChanged.connect(self.disable_enable_autofocus_slider)
         self.autofocus_checkbox.stateChanged.connect(self.toggle_autofocus)
 
@@ -163,7 +165,19 @@ class Ui_BrickDetector(QtWidgets.QMainWindow):
         self.focus_line_edit.textEdited.connect(self.set_box_values)
         self.contrast_line_edit.textEdited.connect(self.set_box_values)
         self.brigthness_line_edit.textEdited.connect(self.set_box_values)
+
+        self.actionOpen.triggered.connect(self.open_file)
         QtCore.QMetaObject.connectSlotsByName(self)
+
+    def open_file(self):
+        fname = QtWidgets.QFileDialog.getOpenFileName(self, 'Open file', 'c:\\', 'Images files (*.jpg *.png)')
+        print(fname)
+        self.video_image_label.setPixmap(QtGui.QPixmap(fname[0]))
+        self.detector.img_path = fname[0]
+        self.static_radio.toggle()
+
+    def set_image_mode(self):
+        self.detector.image_mode = ImageMode.live if self.live_radio.isChecked() else ImageMode.static
 
     def disable_enable_autofocus_slider(self):
         if (self.autofocus_checkbox.checkState() == 0):
@@ -172,7 +186,6 @@ class Ui_BrickDetector(QtWidgets.QMainWindow):
         else:
             self.focus_slider.setDisabled(True)
             self.focus_line_edit.setReadOnly(True)
-
 
     def set_slider_values(self):
         self.detector.focus = self.focus_slider.value()
@@ -208,7 +221,6 @@ class Ui_BrickDetector(QtWidgets.QMainWindow):
         else:
             self.contrast_slider.setValue(0)
            
-            
 
     def toggle_autofocus(self):
         self.detector.autofocus = self.autofocus_checkbox.isChecked()
@@ -235,7 +247,6 @@ class Ui_BrickDetector(QtWidgets.QMainWindow):
         self.menuFile.setTitle(_translate("BrickDetector", "File"))
         self.menuAbout.setTitle(_translate("BrickDetector", "Help"))
         self.actionOpen.setText(_translate("BrickDetector", "Open"))
-        self.actionSave.setText(_translate("BrickDetector", "Save"))
         self.actionAbout.setText(_translate("BrickDetector", "About"))
         self.actionHow_to_use.setText(_translate("BrickDetector", "How to use"))
 

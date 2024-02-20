@@ -24,6 +24,7 @@ class BrickDetector(object):
         self.brick_list = ""
         self.ui = ui
         self.show_brick_list = False
+        self.img_path = ""
         pass
 
     def detect_blocks(self):
@@ -59,11 +60,12 @@ class BrickDetector(object):
                 brick_counter = brick_counter + 1
         return brick_list
     
-    def loop(self, image_path=""): #rename
+    def loop(self): #rename
         brick_list = []   
         self.set_settings()
         if self.image_mode == ImageMode.static:
-            self.org_frame = cv2.imread(image_path)
+            if self.img_path != '':
+                self.org_frame = cv2.imread(self.img_path)
             self.frame, _, _ = utils.automatic_brithness_and_contrast(self.org_frame,1)
             self.frame = utils.resize_image(self.frame)
             self.processed_frame = self.frame.copy()
@@ -73,6 +75,15 @@ class BrickDetector(object):
             # QImage in QPixmap umwandeln und in QGraphicsPixmapItem setzen
             pixmap = QtGui.QPixmap.fromImage(q_image)
             self.ui.video_image_label.setPixmap(pixmap)
+
+            if len(brick_list) < 1:
+                self.brick_list = ""
+                self.ui.brick_list_text_area.setPlainText('No bricks')    
+            else:
+                self.brick_list = ""
+                for brick in brick_list:
+                    self.brick_list = self.brick_list + f'{str(brick)}\n'
+                self.ui.brick_list_text_area.setPlainText(self.brick_list)
 
         elif self.image_mode == ImageMode.live:        
             ret, self.org_frame = self.videoCapture.read()
@@ -109,4 +120,7 @@ class BrickDetector(object):
                 self.videoCapture.set(cv2.CAP_PROP_AUTOFOCUS,1)
             else:
                 self.videoCapture.set(cv2.CAP_PROP_AUTOFOCUS,0)
-                self.videoCapture.set(cv2.CAP_PROP_FOCUS,self.focus)     
+                self.videoCapture.set(cv2.CAP_PROP_FOCUS,self.focus)
+
+
+

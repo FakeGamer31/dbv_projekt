@@ -68,7 +68,6 @@ def resize_image(image, target_width=640, target_height=480):
         return image
 
     # Verwende cv2.resize, um das Bild mit dem neuen Seitenverhältnis zu skalieren
-    print('call cv2.resize')
     resized_image = cv2.resize(image, (new_width, new_height))
 
     return resized_image

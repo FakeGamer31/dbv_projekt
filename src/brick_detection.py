@@ -128,7 +128,7 @@ cv2.createTrackbar('kernel_blur','blurred',0,4,change_kernel_blur)
 cv2.createTrackbar('blur_sigma','blurred',2,15,something)
 
 # Öffnen Sie die Kamera (0 steht für die Standardkamera, kann angepasst werden)
-cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+cap = cv2.VideoCapture('http://192.168.178.36:4747/mjpegfeed')
 cap.set(cv2.CAP_PROP_AUTOFOCUS, 1)
 
 
