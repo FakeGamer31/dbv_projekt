@@ -138,8 +138,9 @@ def calculate_iou(box1, box2):
 
     return iou
 
-def filter_duplicate_coordinates(brick_list, iou_threshold=0.8):
+def filter_duplicate_coordinates(brick_list, iou_threshold=0.7):
     filtered_list = []
+    counter = 1
 
     for i, brick1 in enumerate(brick_list):
         should_add = True
@@ -152,6 +153,8 @@ def filter_duplicate_coordinates(brick_list, iou_threshold=0.8):
                 break
 
         if should_add:
+            brick1.number = counter
+            counter = counter + 1
             filtered_list.append(brick1)
 
     return filtered_list

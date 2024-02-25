@@ -10,10 +10,9 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from model.camera import ImageMode
+from about import Ui_about_dialog
 
-import numpy as np
 import re
-import cv2
 
 
 class Ui_BrickDetector(QtWidgets.QMainWindow):
@@ -166,8 +165,15 @@ class Ui_BrickDetector(QtWidgets.QMainWindow):
         self.contrast_line_edit.textEdited.connect(self.set_box_values)
         self.brigthness_line_edit.textEdited.connect(self.set_box_values)
 
+        self.actionAbout.triggered.connect(self.open_about)
+
         self.actionOpen.triggered.connect(self.open_file)
         QtCore.QMetaObject.connectSlotsByName(self)
+
+    def open_about(self):
+        about_dialog = Ui_about_dialog()
+        about_dialog.setupUi()
+        about_dialog.exec_()
 
     def open_file(self):
         fname = QtWidgets.QFileDialog.getOpenFileName(self, 'Open file', 'c:\\', 'Images files (*.jpg *.png)')
@@ -230,7 +236,8 @@ class Ui_BrickDetector(QtWidgets.QMainWindow):
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
-        self.setWindowTitle(_translate("BrickDetector", "MainWindow"))
+        self.setWindowTitle(_translate("BrickDetector", "Brick Detector"))
+        self.setWindowIcon(QtGui.QIcon('ui/favicon.png'))
         self.camera_settings_box.setTitle(_translate("BrickDetector", "Camera settings"))
         self.focus_label.setText(_translate("BrickDetector", "Focus"))
         self.autofocus_checkbox.setText(_translate("BrickDetector", "Autofocus"))
