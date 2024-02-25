@@ -32,11 +32,11 @@ class BrickDetector(object):
 
         gray = cv2.cvtColor(self.frame, cv2.COLOR_BGR2GRAY)
 
-        blurred = cv2.GaussianBlur(gray, (3,3), 2)
+        blurred = cv2.GaussianBlur(gray, (3,3), 0)
 
         morphed = cv2.morphologyEx(blurred, cv2.MORPH_CLOSE, cv2.getStructuringElement(cv2.MORPH_RECT, (5,5)))
 
-        edges = cv2.Canny(morphed, 50, 150)
+        edges = cv2.Canny(morphed, 50, 3*50)
 
         contours, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 

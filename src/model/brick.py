@@ -145,12 +145,13 @@ HEX_TO_NAMES = {
 }
 
 class Brick:
-    def __init__(self, area, circumference, color_code, original_image, number):
+    def __init__(self, area, circumference, color_code, original_image, coordinates, contour):
         self.area = area
         self.circumference = circumference
         self.color_code = color_code
         self.original_image = original_image
-        self.number = number
+        self.coordinates = coordinates
+        self.contour = contour
 
         # Setze den Type basierend auf den Werten von area und circumference
         if  576*0.9 <= area <= 576*1.1 and 96*0.9 <= circumference <= 96*1.1:
@@ -160,14 +161,14 @@ class Brick:
         # elif area == 8.0 and circumference == 12.0:
         #     self.type = "2x4"
         else:
-            self.type = "Unknown"
+            self.type = "-"
 
         blue, green, red = self.color_code
         # print(f'number: {self.number} and color code: {self.color_code}')
         self.color_str = self.__convert_rgb_to_names((red, green, blue))
 
     def __str__(self):
-        return f"#: {self.number}, \tType: {self.type}, \tColor: {self.color_str}, \tArea: {self.area}, \tCircumference: {self.circumference}"
+        return f"Type: {self.type}, \tColor: {self.color_str}, \tArea: {self.area}, \tCircumference: {self.circumference}, \tCoordinates: {self.coordinates}"
     
     def __convert_rgb_to_names(self, rgb_tuple):
         # a dictionary of all the hex and their respective names in css3
