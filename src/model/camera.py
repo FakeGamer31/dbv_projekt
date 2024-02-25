@@ -1,3 +1,6 @@
+from utils import filter_duplicate_coordinates
+from constants import (BLUR_KERNEL, CANNY_MIN, MORTPH_KERNEL)
+from itertools import product
 from enum import Enum
 from model.brick import Brick
 from PyQt5 import QtGui
@@ -25,18 +28,19 @@ class BrickDetector(object):
         self.ui = ui
         self.show_brick_list = False
         self.img_path = ""
+        self.detect_flag = True
         pass
 
-    def detect_blocks(self):
+    def detect_blocks(self,blur_kernel,morph_kernel,canny_min):
         brick_list = []
 
         gray = cv2.cvtColor(self.frame, cv2.COLOR_BGR2GRAY)
 
-        blurred = cv2.GaussianBlur(gray, (3,3), 0)
+        blurred = cv2.GaussianBlur(gray, blur_kernel, 0)
 
-        morphed = cv2.morphologyEx(blurred, cv2.MORPH_CLOSE, cv2.getStructuringElement(cv2.MORPH_RECT, (5,5)))
+        morphed = cv2.morphologyEx(blurred, cv2.MORPH_CLOSE, cv2.getStructuringElement(cv2.MORPH_RECT, morph_kernel))
 
-        edges = cv2.Canny(morphed, 50, 3*50)
+        edges = cv2.Canny(morphed, canny_min, canny_min*3)
 
         contours, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
@@ -53,10 +57,7 @@ class BrickDetector(object):
             # if area > 500 and ((4/np.pi)*0.8) <= compactness <= (((4/np.pi)*1.2)) :  # Beispielgrenze für die Mindestgröße der Kontur
                 x, y, w, h =cv2.boundingRect(contour)
                 dominant_color = utils.dominant_color_from_roi(self.processed_frame, contour)
-                box = np.intp(cv2.boxPoints(cv2.minAreaRect(contour)))
-                brick_list.append(Brick(area=area, circumference=circumfurence, color_code=dominant_color, original_image=self.processed_frame, number=brick_counter + 1))
-                cv2.drawContours(self.processed_frame, [box], 0, (0,255,0), 1)
-                cv2.putText(self.processed_frame, f'# {brick_counter+1} {brick_list[brick_counter].color_str}', (x-10,y-10), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (255,255,255), 0, cv2.LINE_AA)
+                brick_list.append(Brick(area=area, circumference=circumfurence, color_code=dominant_color, original_image=self.processed_frame, coordinates=(x,y,w,h), contour=contour))
                 brick_counter = brick_counter + 1
         return brick_list
     
@@ -64,26 +65,39 @@ class BrickDetector(object):
         brick_list = []   
         self.set_settings()
         if self.image_mode == ImageMode.static:
-            if self.img_path != '':
-                self.org_frame = cv2.imread(self.img_path)
-            self.frame, _, _ = utils.automatic_brithness_and_contrast(self.org_frame,1)
-            self.frame = utils.resize_image(self.frame)
-            self.processed_frame = self.frame.copy()
-            brick_list = self.detect_blocks()
+            if self.detect_flag:
+                if self.img_path != '':
+                    self.org_frame = cv2.imread(self.img_path)
+                self.frame, _, _ = utils.automatic_brithness_and_contrast(self.org_frame,1)
+                self.frame = utils.resize_image(self.frame)
+                self.processed_frame = self.frame.copy()
 
-            q_image = QtGui.QImage(self.processed_frame.data, self.processed_frame.shape[1], self.processed_frame.shape[0], self.processed_frame.shape[1]*3, QtGui.QImage.Format_RGB888).rgbSwapped()
-            # QImage in QPixmap umwandeln und in QGraphicsPixmapItem setzen
-            pixmap = QtGui.QPixmap.fromImage(q_image)
-            self.ui.video_image_label.setPixmap(pixmap)
-
-            if len(brick_list) < 1:
-                self.brick_list = ""
-                self.ui.brick_list_text_area.setPlainText('No bricks')    
-            else:
-                self.brick_list = ""
+                for (blur_kernel,morph_kernel,canny_min) in list(product(BLUR_KERNEL, MORTPH_KERNEL, CANNY_MIN)):
+                    brick_list = brick_list + self.detect_blocks(blur_kernel,morph_kernel,canny_min)
+                
+                brick_list = filter_duplicate_coordinates(brick_list)
                 for brick in brick_list:
-                    self.brick_list = self.brick_list + f'{str(brick)}\n'
-                self.ui.brick_list_text_area.setPlainText(self.brick_list)
+                    contour = brick.contour
+                    x, y, w, h = cv2.boundingRect(contour)
+                    box = np.intp(cv2.boxPoints(cv2.minAreaRect(contour)))
+                    cv2.drawContours(self.processed_frame, [box], 0, (0,255,0), 1)
+                    cv2.putText(self.processed_frame, f'{brick.color_str}', (x-10,y-10), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (255,255,255), 0, cv2.LINE_AA)
+
+
+                q_image = QtGui.QImage(self.processed_frame.data, self.processed_frame.shape[1], self.processed_frame.shape[0], self.processed_frame.shape[1]*3, QtGui.QImage.Format_RGB888).rgbSwapped()
+                # QImage in QPixmap umwandeln und in QGraphicsPixmapItem setzen
+                pixmap = QtGui.QPixmap.fromImage(q_image)
+                self.ui.video_image_label.setPixmap(pixmap)
+
+                if len(brick_list) < 1:
+                    self.brick_list = ""
+                    self.ui.brick_list_text_area.setPlainText('No bricks')    
+                else:
+                    self.brick_list = ""
+                    for brick in brick_list:
+                        self.brick_list = self.brick_list + f'{str(brick)}\n'
+                    self.ui.brick_list_text_area.setPlainText(self.brick_list)
+                self.detect_flag = False
 
         elif self.image_mode == ImageMode.live:        
             ret, self.org_frame = self.videoCapture.read()
@@ -93,7 +107,7 @@ class BrickDetector(object):
             self.frame, _, _ = utils.automatic_brithness_and_contrast(self.org_frame,1)
             self.frame = utils.resize_image(self.frame)
             self.processed_frame = self.frame.copy()
-            brick_list = self.detect_blocks()
+            brick_list = self.detect_blocks((3,3), (5,5), 50)
 
             q_image = QtGui.QImage(self.processed_frame.data, self.processed_frame.shape[1], self.processed_frame.shape[0], self.processed_frame.shape[1]*3, QtGui.QImage.Format_RGB888).rgbSwapped()
             # QImage in QPixmap umwandeln und in QGraphicsPixmapItem setzen

@@ -1,9 +1,10 @@
-import cv2
-import utils
-import numpy as np
 from matplotlib import pyplot as plt
 from model.brick import Brick
 from itertools import product
+
+import cv2
+import utils
+import numpy as np
 
 g = 102
 maxx = 255

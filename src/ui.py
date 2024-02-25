@@ -171,9 +171,9 @@ class Ui_BrickDetector(QtWidgets.QMainWindow):
 
     def open_file(self):
         fname = QtWidgets.QFileDialog.getOpenFileName(self, 'Open file', 'c:\\', 'Images files (*.jpg *.png)')
-        print(fname)
         self.video_image_label.setPixmap(QtGui.QPixmap(fname[0]))
         self.detector.img_path = fname[0]
+        self.detector.detect_flag = True
         self.static_radio.toggle()
 
     def set_image_mode(self):

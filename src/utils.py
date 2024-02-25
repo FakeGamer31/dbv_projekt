@@ -114,3 +114,44 @@ def dominant_color_from_roi(org_image, contour):
             dominant_color = np.median(roi[mask == 255].reshape(-1, 3), axis=0)
 
             return dominant_color
+
+def calculate_iou(box1, box2):
+    x1, y1, w1, h1 = box1
+    x2, y2, w2, h2 = box2
+
+    # Koordinaten der Überlappung berechnen
+    x_left = max(x1, x2)
+    y_top = max(y1, y2)
+    x_right = min(x1 + w1, x2 + w2)
+    y_bottom = min(y1 + h1, y2 + h2)
+
+    # Überlappungsfläche berechnen
+    intersection_area = max(0, x_right - x_left) * max(0, y_bottom - y_top)
+
+    # Gesamtfläche der beiden Bounding-Boxen berechnen
+    area1 = w1 * h1
+    area2 = w2 * h2
+    union_area = area1 + area2 - intersection_area
+
+    # IOU berechnen
+    iou = intersection_area / union_area if union_area > 0 else 0
+
+    return iou
+
+def filter_duplicate_coordinates(brick_list, iou_threshold=0.8):
+    filtered_list = []
+
+    for i, brick1 in enumerate(brick_list):
+        should_add = True
+
+        for j, brick2 in enumerate(filtered_list):
+            iou = calculate_iou(brick1.coordinates, brick2.coordinates)
+
+            if iou > iou_threshold:
+                should_add = False
+                break
+
+        if should_add:
+            filtered_list.append(brick1)
+
+    return filtered_list
