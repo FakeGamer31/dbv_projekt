@@ -107,7 +107,17 @@ class BrickDetector(object):
             self.frame, _, _ = utils.automatic_brithness_and_contrast(self.org_frame,1)
             self.frame = utils.resize_image(self.frame)
             self.processed_frame = self.frame.copy()
-            brick_list = self.detect_blocks((3,3), (5,5), 50)
+
+            for (blur_kernel,morph_kernel,canny_min) in list(product(BLUR_KERNEL, MORTPH_KERNEL, CANNY_MIN)):
+                brick_list = brick_list + self.detect_blocks(blur_kernel,morph_kernel,canny_min)
+                
+            brick_list = filter_duplicate_coordinates(brick_list)
+            for brick in brick_list:
+                contour = brick.contour
+                x, y, w, h = cv2.boundingRect(contour)
+                box = np.intp(cv2.boxPoints(cv2.minAreaRect(contour)))
+                cv2.drawContours(self.processed_frame, [box], 0, (0,255,0), 1)
+                cv2.putText(self.processed_frame, f'{brick.color_str}', (x-10,y-10), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (255,255,255), 0, cv2.LINE_AA)
 
             q_image = QtGui.QImage(self.processed_frame.data, self.processed_frame.shape[1], self.processed_frame.shape[0], self.processed_frame.shape[1]*3, QtGui.QImage.Format_RGB888).rgbSwapped()
             # QImage in QPixmap umwandeln und in QGraphicsPixmapItem setzen
