@@ -42,7 +42,7 @@ class Ui_BrickDetector(QtWidgets.QMainWindow):
         self.focus_label.setGeometry(QtCore.QRect(10, 40, 47, 13))
         self.focus_label.setObjectName("focus_label")
         self.autofocus_checkbox = QtWidgets.QCheckBox(self.camera_settings_box)
-        self.autofocus_checkbox.setGeometry(QtCore.QRect(10, 20, 70, 17))
+        self.autofocus_checkbox.setGeometry(QtCore.QRect(10, 20, 100, 17))
         self.autofocus_checkbox.setChecked(True)
         self.autofocus_checkbox.setObjectName("autofocus_checkbox")
         self.static_radio = QtWidgets.QRadioButton(self.camera_settings_box)
@@ -183,7 +183,11 @@ class Ui_BrickDetector(QtWidgets.QMainWindow):
         self.static_radio.toggle()
 
     def set_image_mode(self):
-        self.detector.image_mode = ImageMode.live if self.live_radio.isChecked() else ImageMode.static
+        if self.live_radio.isChecked():
+            self.detector.image_mode = ImageMode.live
+        else:
+            self.detector.image_mode = ImageMode.static
+            self.detector.detect_flag = True
 
     def disable_enable_autofocus_slider(self):
         if (self.autofocus_checkbox.checkState() == 0):

@@ -9,6 +9,8 @@ import cv2
 import utils
 import numpy as np
 
+combinations = list(product(BLUR_KERNEL, MORTPH_KERNEL, CANNY_MIN))
+
 class ImageMode(Enum):
     live = 1
     static = 2
@@ -59,7 +61,7 @@ class BrickDetector(object):
                 brick_list.append(Brick(area=area, circumference=circumfurence, color_code=dominant_color, original_image=self.org_frame, coordinates=(x,y,w,h), contour=contour))
         return brick_list
     
-    def loop(self): #rename
+    def loop(self):
         brick_list = []   
         self.set_settings()
         if self.image_mode == ImageMode.static:
@@ -69,7 +71,7 @@ class BrickDetector(object):
                 self.org_frame = utils.resize_image(self.org_frame)
                 self.processed_frame, _, _ = utils.automatic_brithness_and_contrast(self.org_frame,1)
 
-                for (blur_kernel,morph_kernel,canny_min) in list(product(BLUR_KERNEL, MORTPH_KERNEL, CANNY_MIN)):
+                for (blur_kernel,morph_kernel,canny_min) in combinations:
                     brick_list = brick_list + self.detect_blocks(blur_kernel,morph_kernel,canny_min)
 
                 temp_brick_list = []
@@ -108,9 +110,9 @@ class BrickDetector(object):
             self.org_frame = utils.resize_image(self.org_frame)
             self.processed_frame, _, _ = utils.automatic_brithness_and_contrast(self.org_frame,1)
 
-            for (blur_kernel,morph_kernel,canny_min) in list(product(BLUR_KERNEL, MORTPH_KERNEL, CANNY_MIN)):
+            for (blur_kernel,morph_kernel,canny_min) in combinations:
                 brick_list = brick_list + self.detect_blocks(blur_kernel,morph_kernel,canny_min)
-
+            
             temp_brick_list = []
             for brick in brick_list:
                 if brick.type != '-':
