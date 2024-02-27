@@ -71,18 +71,18 @@ class Ui_BrickDetector(QtWidgets.QMainWindow):
         self.contrast_label = QtWidgets.QLabel(self.camera_settings_box)
         self.contrast_label.setGeometry(QtCore.QRect(10, 90, 100, 13))
         self.contrast_label.setObjectName("contrast_label")
-        self.brigthness_label = QtWidgets.QLabel(self.camera_settings_box)
-        self.brigthness_label.setGeometry(QtCore.QRect(10, 140, 100, 20))
-        self.brigthness_label.setObjectName("brigthness_label")
-        self.brigthness_slider = QtWidgets.QSlider(self.camera_settings_box)
-        self.brigthness_slider.setGeometry(QtCore.QRect(10, 160, 181, 22))
-        self.brigthness_slider.setMouseTracking(False)
-        self.brigthness_slider.setMaximum(255)
-        self.brigthness_slider.setSingleStep(5)
-        self.brigthness_slider.setOrientation(QtCore.Qt.Horizontal)
-        self.brigthness_slider.setTickPosition(QtWidgets.QSlider.TicksAbove)
-        self.brigthness_slider.setObjectName("brigthness_slider")
-        self.brigthness_slider.setValue(128)
+        self.brightness_label = QtWidgets.QLabel(self.camera_settings_box)
+        self.brightness_label.setGeometry(QtCore.QRect(10, 140, 100, 20))
+        self.brightness_label.setObjectName("brightness_label")
+        self.brightness_slider = QtWidgets.QSlider(self.camera_settings_box)
+        self.brightness_slider.setGeometry(QtCore.QRect(10, 160, 181, 22))
+        self.brightness_slider.setMouseTracking(False)
+        self.brightness_slider.setMaximum(255)
+        self.brightness_slider.setSingleStep(5)
+        self.brightness_slider.setOrientation(QtCore.Qt.Horizontal)
+        self.brightness_slider.setTickPosition(QtWidgets.QSlider.TicksAbove)
+        self.brightness_slider.setObjectName("brightness_slider")
+        self.brightness_slider.setValue(128)
         self.focus_line_edit = QtWidgets.QLineEdit(self.camera_settings_box)
         self.focus_line_edit.setMaxLength(3)
         self.focus_line_edit.setGeometry(QtCore.QRect(200, 60, 31, 20))
@@ -92,11 +92,11 @@ class Ui_BrickDetector(QtWidgets.QMainWindow):
         self.contrast_line_edit.setGeometry(QtCore.QRect(200, 110, 31, 20))
         self.contrast_line_edit.setMaxLength(3)
         self.contrast_line_edit.setObjectName("contrast_line_edit")
-        self.brigthness_line_edit = QtWidgets.QLineEdit(self.camera_settings_box)
-        self.brigthness_line_edit.setGeometry(QtCore.QRect(200, 160, 31, 20))
-        self.brigthness_line_edit.setMaxLength(3)
-        self.brigthness_line_edit.setClearButtonEnabled(False)
-        self.brigthness_line_edit.setObjectName("brigthness_line_edit")
+        self.brightness_line_edit = QtWidgets.QLineEdit(self.camera_settings_box)
+        self.brightness_line_edit.setGeometry(QtCore.QRect(200, 160, 31, 20))
+        self.brightness_line_edit.setMaxLength(3)
+        self.brightness_line_edit.setClearButtonEnabled(False)
+        self.brightness_line_edit.setObjectName("brightness_line_edit")
         self.buttonBox = QtWidgets.QDialogButtonBox(self.centralwidget)
         self.buttonBox.setGeometry(QtCore.QRect(830, 530, 341, 41))
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
@@ -144,7 +144,7 @@ class Ui_BrickDetector(QtWidgets.QMainWindow):
         self.menubar.addAction(self.menuAbout.menuAction())
         self.focus_label.setBuddy(self.focus_slider)
         self.contrast_label.setBuddy(self.focus_slider)
-        self.brigthness_label.setBuddy(self.focus_slider)
+        self.brightness_label.setBuddy(self.focus_slider)
         self.timer = QtCore.QTimer(self)
         self.timer.timeout.connect(detector.loop)
         self.timer.start(30)  # Aktualisiere alle 30 Millisekunden
@@ -159,11 +159,11 @@ class Ui_BrickDetector(QtWidgets.QMainWindow):
 
         self.focus_slider.valueChanged.connect(self.set_slider_values)
         self.contrast_slider.valueChanged.connect(self.set_slider_values)
-        self.brigthness_slider.valueChanged.connect(self.set_slider_values)
+        self.brightness_slider.valueChanged.connect(self.set_slider_values)
 
         self.focus_line_edit.textEdited.connect(self.set_box_values)
         self.contrast_line_edit.textEdited.connect(self.set_box_values)
-        self.brigthness_line_edit.textEdited.connect(self.set_box_values)
+        self.brightness_line_edit.textEdited.connect(self.set_box_values)
 
         self.actionAbout.triggered.connect(self.open_about)
 
@@ -199,11 +199,11 @@ class Ui_BrickDetector(QtWidgets.QMainWindow):
 
     def set_slider_values(self):
         self.detector.focus = self.focus_slider.value()
-        self.detector.brigthness = self.brigthness_slider.value()
+        self.detector.brightness = self.brightness_slider.value()
         self.detector.contrast = self.contrast_slider.value()
 
         self.focus_line_edit.setText(str(self.focus_slider.value()))
-        self.brigthness_line_edit.setText(str(self.brigthness_slider.value()))
+        self.brightness_line_edit.setText(str(self.brightness_slider.value()))
         self.contrast_line_edit.setText(str(self.contrast_slider.value()))
 
     def set_box_values(self):
@@ -215,13 +215,13 @@ class Ui_BrickDetector(QtWidgets.QMainWindow):
         else:
             self.focus_slider.setValue(0)
             
-        if (re.search("^(?:25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})?$", self.brigthness_line_edit.text())):
-            if (self.brigthness_line_edit.text() == ''):
-                self.brigthness_slider.setValue(0)
+        if (re.search("^(?:25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})?$", self.brightness_line_edit.text())):
+            if (self.brightness_line_edit.text() == ''):
+                self.brightness_slider.setValue(0)
             else:
-                self.brigthness_slider.setValue(int(self.brigthness_line_edit.text()))
+                self.brightness_slider.setValue(int(self.brightness_line_edit.text()))
         else:
-            self.brigthness_slider.setValue(0)
+            self.brightness_slider.setValue(0)
                 
         if (re.search("^(?:25[0-5]|2[0-4][0-9]|[01]?[0-9]{1,2})?$", self.contrast_line_edit.text())):
             if (self.contrast_line_edit.text() == ''):
@@ -249,10 +249,10 @@ class Ui_BrickDetector(QtWidgets.QMainWindow):
         self.live_radio.setText(_translate("BrickDetector", "Live"))
         self.image_label.setText(_translate("BrickDetector", "Image mode"))
         self.contrast_label.setText(_translate("BrickDetector", "Contrast"))
-        self.brigthness_label.setText(_translate("BrickDetector", "Brigthness"))
+        self.brightness_label.setText(_translate("BrickDetector", "Brightness"))
         self.focus_line_edit.setText(_translate("BrickDetector", "128"))
         self.contrast_line_edit.setText(_translate("BrickDetector", "128"))
-        self.brigthness_line_edit.setText(_translate("BrickDetector", "128"))
+        self.brightness_line_edit.setText(_translate("BrickDetector", "128"))
         self.brick_list_text_area.setPlaceholderText(_translate("BrickDetector", "Bricklist:"))
         self.search_button.setText(_translate("BrickDetector", "Search"))
         self.menuFile.setTitle(_translate("BrickDetector", "File"))
