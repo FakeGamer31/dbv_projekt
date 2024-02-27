@@ -3,6 +3,12 @@ import numpy as np
 
 def automatic_brithness_and_contrast(image, clip_hist_percent=1):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+    # Check if the image is completely black or white
+    if np.all(gray == 0):
+        return (image, 1.0, 0.0)  # No adjustments needed for a black image
+    elif np.all(gray == 255):
+        return (image, 1.0, 0.0)  # No adjustments needed for a white image
     
     # Calculate grayscale histogram
     hist = cv2.calcHist([gray],[0],None,[256],[0,256])
@@ -85,8 +91,7 @@ def dominant_color_from_roi(org_image, contour):
 
             # Extrahieren Sie den Bereich des Bildes innerhalb des Rechtecks
             roi = cv2.bitwise_and(org_image, mask)
-            # cv2.imshow('roi', roi) #hier ist nur  noch der block vlt nutzen für die farbe
-
+            
             gray = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
             _, thresh = cv2.threshold(gray, 1, 255, cv2.THRESH_BINARY)
             contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
@@ -104,6 +109,10 @@ def dominant_color_from_roi(org_image, contour):
                         prev_largest_contour_area = largest_contour_area
                         prev_largest_contour = largest_contour
                 # Größte Kontur (Annahme: Das Objekt ist die größte Kontur)
+            if len(contours) == 1:
+                prev_largest_contour = contours[0]
+            if len(contours) == 0:
+                prev_largest_contour = contour
             largest_contour = prev_largest_contour
 
             # Maske für das Objekt erstellen
