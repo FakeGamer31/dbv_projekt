@@ -108,7 +108,7 @@ class Ui_BrickDetector(QtWidgets.QMainWindow):
         self.video_image_label.setMinimumSize(QtCore.QSize(640, 480))
         self.video_image_label.setMaximumSize(QtCore.QSize(640, 480))
         self.video_image_label.setText("")
-        self.video_image_label.setPixmap(QtGui.QPixmap("images/12-13-2023 11_41_31.jpg"))
+        self.video_image_label.setPixmap(QtGui.QPixmap(""))
         self.video_image_label.setScaledContents(True)
         self.video_image_label.setObjectName("video_image_label")
         self.brick_list_text_area = QtWidgets.QTextEdit(self.centralwidget)
