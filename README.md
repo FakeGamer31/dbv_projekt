@@ -19,5 +19,5 @@ The recognition can be applied to a live or a static image. The recognized brick
 - Install the dependencies from the [requirmenets.txt](/requirmenets.txt)
 - Run the [main.py](/src/main.py)
   ```bash
-   py src\main.py
+  py src\main.py
   ```
