@@ -7,6 +7,9 @@ import numpy as np
 import cv2
 
 class Compactness(Enum):
+    """
+    Enum representing the compactness of different brick types.
+    """
     TwoByTwo    = 4/np.pi
     TwoByThree  = 25/(6*np.pi)
     TwoByFour   = 9/(2*np.pi)
@@ -14,7 +17,32 @@ class Compactness(Enum):
     TwoBySix    = 16/(3*np.pi)
 
 class Brick:
+    """
+    Class representing a brick.
+
+    Attributes:
+        area (float): The area of the brick.
+        circumference (float): The circumference of the brick.
+        color_code (str): The color code of the brick.
+        original_image (np.array): The original image of the brick.
+        coordinates (tuple): The coordinates of the brick.
+        contour (np.array): The contour of the brick.
+        compactness (float): The compactness of the brick.
+        number (str): The number of the brick.
+        edges (np.array): The edges of the brick.
+    """
     def __init__(self, area, circumference, color_code, original_image, coordinates, contour):
+        """
+        Initializes a Brick instance.
+
+        Args:
+            area (float): The area of the brick.
+            circumference (float): The circumference of the brick.
+            color_code (str): The color code of the brick.
+            original_image (np.array): The original image of the brick.
+            coordinates (tuple): The coordinates of the brick.
+            contour (np.array): The contour of the brick.
+        """
         self.area = area
         self.circumference = circumference
         self.color_code = color_code
@@ -48,6 +76,15 @@ class Brick:
         return f"#: {self.number}, Type: {self.type}, \tColor: {self.color_str}, \tArea: {self.area}, \tCircumference: {self.circumference}, \tCompacntess: {self.compactness}"
     
     def __convert_rgb_to_names__(self, rgb_tuple):
+        """
+        Converts an RGB color code to a color name.
+
+        Args:
+            rgb_tuple (tuple): The RGB color code to be converted.
+
+        Returns:
+            str: The name of the color.
+        """
         # a dictionary of all the hex and their respective names in css3
         css3_db = HEX_TO_NAMES
         names = []
@@ -62,14 +99,14 @@ class Brick:
     
     def __is_box_squared__(self, numbers, tolerance=1):
         """
-        Check if all numbers in the given list are roughly the same within a certain tolerance.
+        Checks if all numbers in the given list are approximately equal within a certain tolerance.
 
-        Parameters:
-        - numbers: List of numbers to be checked.
-        - tolerance: Tolerance level for considering numbers as roughly the same.
+        Args:
+            numbers (list): List of numbers to be checked.
+            tolerance (int, optional): Tolerance level for considering numbers as approximately equal. Defaults to 1.
 
         Returns:
-        - True if all numbers are roughly the same, False otherwise.
+            bool: True if all numbers are approximately equal, False otherwise.
         """
         # Check if the difference between each pair of consecutive numbers is within the tolerance
         wurp = all(abs(numbers[i] - numbers[i+1]) <= tolerance for i in range(len(numbers)-1))

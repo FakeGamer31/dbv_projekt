@@ -33,7 +33,23 @@ class BrickDetector(object):
         self.detect_flag = True
         pass
 
-    def detect_blocks(self,blur_kernel,morph_kernel,canny_min):
+    def detect_blocks(self,blur_kernel,morph_kernel,canny_min): 
+        """
+        Detects blocks in the processed frame of the image.
+
+        This function applies a series of image processing techniques including
+        grayscale conversion, Gaussian blur, morphological operations, and Canny edge detection
+        to detect blocks in the image. It then finds contours in the resulting image and calculates
+        the compactness of each contour to determine if it represents a block.
+
+        Parameters:
+        blur_kernel (tuple): The kernel size for the Gaussian blur operation.
+        morph_kernel (tuple): The kernel size for the morphological operation.
+        canny_min (int): The minimum threshold for the Canny edge detection.
+
+        Returns:
+        brick_list (list): A list of detected bricks in the image.
+        """
         brick_list = []
 
         gray = cv2.cvtColor(self.processed_frame, cv2.COLOR_BGR2GRAY)
@@ -62,6 +78,24 @@ class BrickDetector(object):
         return brick_list
     
     def loop(self):
+        """
+        Main loop for processing video frames and detecting bricks.
+
+        This function continuously captures frames from the video source, processes them,
+        and detects bricks. If bricks are detected, it updates the brick list. If no bricks
+        are detected, it clears the brick list.
+
+        In live mode, the function reads frames from the video capture, resizes them, and adjusts
+        their brightness and contrast. It then detects blocks in the processed frame using various
+        combinations of blur kernel, morph kernel, and canny min values. It filters out duplicate
+        coordinates from the detected blocks and updates the brick list.
+
+        In static mode, the function displays the processed frame and updates the brick list based
+        on the detected bricks.
+
+        Raises:
+        Exception: If no image mode is selected.
+        """
         brick_list = []   
         self.set_settings()
         if self.image_mode == ImageMode.static:
@@ -106,7 +140,7 @@ class BrickDetector(object):
             ret, self.org_frame = self.videoCapture.read()
             if not ret:
                 print('Kein Bild')
-                pass
+                return
             self.org_frame = utils.resize_image(self.org_frame)
             self.processed_frame, _, _ = utils.automatic_brithness_and_contrast(self.org_frame,1)
 
@@ -144,14 +178,21 @@ class BrickDetector(object):
         else:
             print('Fehler, kein image mode ausgewählt')
     
-    def set_settings(self):    
-            self.videoCapture.set(cv2.CAP_PROP_BRIGHTNESS,self.brithness)
-            self.videoCapture.set(cv2.CAP_PROP_CONTRAST,self.contrast)
-            if (self.autofocus):
-                self.videoCapture.set(cv2.CAP_PROP_AUTOFOCUS,1)
-            else:
-                self.videoCapture.set(cv2.CAP_PROP_AUTOFOCUS,0)
-                self.videoCapture.set(cv2.CAP_PROP_FOCUS,self.focus)
+    def set_settings(self): 
+        """
+        Sets the settings for the video capture.
+
+        This function sets the brightness, contrast, and autofocus settings for the video capture.
+        If autofocus is enabled, it sets the autofocus property. If autofocus is disabled, it sets
+        the focus level manually.
+        """  
+        self.videoCapture.set(cv2.CAP_PROP_BRIGHTNESS,self.brithness)
+        self.videoCapture.set(cv2.CAP_PROP_CONTRAST,self.contrast)
+        if (self.autofocus):
+            self.videoCapture.set(cv2.CAP_PROP_AUTOFOCUS,1)
+        else:
+            self.videoCapture.set(cv2.CAP_PROP_AUTOFOCUS,0)
+            self.videoCapture.set(cv2.CAP_PROP_FOCUS,self.focus)
 
 
 
