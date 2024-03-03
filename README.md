@@ -8,7 +8,7 @@ The recognition can be applied to a live or a static image. The recognized brick
 ### Requirements
 
 - Python 3.10.11
-- ...
+- Additional dependencies will be installed from the [requirmenets.txt](/requirmenets.txt)
 
 ### Installation and Run
 
@@ -16,7 +16,14 @@ The recognition can be applied to a live or a static image. The recognized brick
   ```bash
   python -m venv .venv
   ```
+- Activate the virutal enviroment
+  ```bash
+  .venv\Scripts\activate
+  ```
 - Install the dependencies from the [requirmenets.txt](/requirmenets.txt)
+  ```bash
+  pip install -r requirements.txt
+  ```
 - Run the [main.py](/src/main.py)
   ```bash
   py src\main.py
