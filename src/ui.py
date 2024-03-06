@@ -135,11 +135,8 @@ class Ui_BrickDetector(QtWidgets.QMainWindow):
         self.actionOpen.setObjectName("actionOpen")
         self.actionAbout = QtWidgets.QAction(self)
         self.actionAbout.setObjectName("actionAbout")
-        self.actionHow_to_use = QtWidgets.QAction(self)
-        self.actionHow_to_use.setObjectName("actionHow_to_use")
         self.menuFile.addAction(self.actionOpen)
         self.menuAbout.addAction(self.actionAbout)
-        self.menuAbout.addAction(self.actionHow_to_use)
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuAbout.menuAction())
         self.focus_label.setBuddy(self.focus_slider)
@@ -177,10 +174,11 @@ class Ui_BrickDetector(QtWidgets.QMainWindow):
 
     def open_file(self):
         fname = QtWidgets.QFileDialog.getOpenFileName(self, 'Open file', 'c:\\', 'Images files (*.jpg *.png)')
-        self.video_image_label.setPixmap(QtGui.QPixmap(fname[0]))
-        self.detector.img_path = fname[0]
-        self.detector.detect_flag = True
-        self.static_radio.toggle()
+        if fname[0] != '':
+            self.video_image_label.setPixmap(QtGui.QPixmap(fname[0]))
+            self.detector.img_path = fname[0]
+            self.detector.detect_flag = True
+            self.static_radio.toggle()
 
     def set_image_mode(self):
         if self.live_radio.isChecked():
@@ -241,7 +239,7 @@ class Ui_BrickDetector(QtWidgets.QMainWindow):
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("BrickDetector", "Brick Detector"))
-        self.setWindowIcon(QtGui.QIcon('ui/favicon.png'))
+        self.setWindowIcon(QtGui.QIcon('../ui/favicon.png'))
         self.camera_settings_box.setTitle(_translate("BrickDetector", "Camera settings"))
         self.focus_label.setText(_translate("BrickDetector", "Focus"))
         self.autofocus_checkbox.setText(_translate("BrickDetector", "Autofocus"))
@@ -259,7 +257,6 @@ class Ui_BrickDetector(QtWidgets.QMainWindow):
         self.menuAbout.setTitle(_translate("BrickDetector", "Help"))
         self.actionOpen.setText(_translate("BrickDetector", "Open"))
         self.actionAbout.setText(_translate("BrickDetector", "About"))
-        self.actionHow_to_use.setText(_translate("BrickDetector", "How to use"))
 
 
 # if __name__ == "__main__":
