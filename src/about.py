@@ -10,9 +10,11 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+import os
 
 class Ui_about_dialog(QtWidgets.QDialog):
-    def setupUi(self):
+    def setupUi(self):        
+        file_path = os.path.abspath(__file__)
         self.setObjectName("about_dialog")
         self.resize(400, 300)
         self.setMinimumSize(QtCore.QSize(400, 300))
@@ -39,7 +41,7 @@ class Ui_about_dialog(QtWidgets.QDialog):
         self.hsb_logo_label = QtWidgets.QLabel(self.frame)
         self.hsb_logo_label.setGeometry(QtCore.QRect(130, 0, 150, 80))
         self.hsb_logo_label.setText("")
-        self.hsb_logo_label.setPixmap(QtGui.QPixmap("../ui/HSB_Logo_Farbe_sRGB.svg"))
+        self.hsb_logo_label.setPixmap(QtGui.QPixmap(os.path.join(os.path.dirname(file_path), '..', 'ui', 'HSB_Logo_Farbe_sRGB.svg')))
         self.hsb_logo_label.setScaledContents(True)
         self.hsb_logo_label.setObjectName("hsb_logo_label")
         self.ok_button = QtWidgets.QDialogButtonBox(self.frame)
@@ -50,7 +52,7 @@ class Ui_about_dialog(QtWidgets.QDialog):
         self.ok_button.setObjectName("ok_button")
 
         self.retranslateUi()
-        self.setWindowIcon(QtGui.QIcon('../ui/favicon.png'))
+        self.setWindowIcon(QtGui.QIcon(os.path.join(os.path.dirname(file_path), '..', 'ui', 'favicon.png')))
         self.ok_button.accepted.connect(self.accept) # type: ignore
         self.ok_button.rejected.connect(self.reject) # type: ignore
         QtCore.QMetaObject.connectSlotsByName(self)
@@ -58,7 +60,7 @@ class Ui_about_dialog(QtWidgets.QDialog):
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("about_dialog", "About"))
-        self.label.setText(_translate("about_dialog", "Created by                             Yusuf Akbulut & Gunnar Martens"))
+        self.label.setText(_translate("about_dialog", "Created by Yusuf Akbulut & Gunnar Martens"))
         self.text_label.setText(_translate("about_dialog", "Brick Detector"))
 
 

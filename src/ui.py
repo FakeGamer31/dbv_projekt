@@ -13,10 +13,12 @@ from model.camera import ImageMode
 from about import Ui_about_dialog
 
 import re
+import os
 
 
 class Ui_BrickDetector(QtWidgets.QMainWindow):
     def setupUi(self, detector):
+        file_path = os.path.abspath(__file__)
         self.detector = detector
         self.setObjectName("BrickDetector")
         self.resize(960, 720)
@@ -145,25 +147,19 @@ class Ui_BrickDetector(QtWidgets.QMainWindow):
         self.timer = QtCore.QTimer(self)
         self.timer.timeout.connect(detector.loop)
         self.timer.start(30)  # Aktualisiere alle 30 Millisekunden
-
         self.retranslateUi()
+        self.setWindowIcon(QtGui.QIcon(os.path.join(os.path.dirname(file_path), '..', 'ui', 'favicon.png')))
         self.search_button.clicked['bool'].connect(self.startDetection)
-
         self.live_radio.toggled['bool'].connect(self.set_image_mode)
-
         self.autofocus_checkbox.stateChanged.connect(self.disable_enable_autofocus_slider)
         self.autofocus_checkbox.stateChanged.connect(self.toggle_autofocus)
-
         self.focus_slider.valueChanged.connect(self.set_slider_values)
         self.contrast_slider.valueChanged.connect(self.set_slider_values)
         self.brightness_slider.valueChanged.connect(self.set_slider_values)
-
         self.focus_line_edit.textEdited.connect(self.set_box_values)
         self.contrast_line_edit.textEdited.connect(self.set_box_values)
         self.brightness_line_edit.textEdited.connect(self.set_box_values)
-
         self.actionAbout.triggered.connect(self.open_about)
-
         self.actionOpen.triggered.connect(self.open_file)
         QtCore.QMetaObject.connectSlotsByName(self)
 
@@ -239,7 +235,6 @@ class Ui_BrickDetector(QtWidgets.QMainWindow):
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("BrickDetector", "Brick Detector"))
-        self.setWindowIcon(QtGui.QIcon('../ui/favicon.png'))
         self.camera_settings_box.setTitle(_translate("BrickDetector", "Camera settings"))
         self.focus_label.setText(_translate("BrickDetector", "Focus"))
         self.autofocus_checkbox.setText(_translate("BrickDetector", "Autofocus"))
