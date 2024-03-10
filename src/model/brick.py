@@ -4,7 +4,6 @@ from constants import HEX_TO_NAMES
 from enum import Enum
 
 import numpy as np
-import cv2
 
 class Compactness(Enum):
     """
