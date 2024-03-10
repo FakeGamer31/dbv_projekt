@@ -29,7 +29,6 @@ class Brick:
         contour (np.array): The contour of the brick.
         compactness (float): The compactness of the brick.
         number (str): The number of the brick.
-        edges (np.array): The edges of the brick.
     """
     def __init__(self, area, circumference, color_code, original_image, coordinates, contour):
         """
@@ -51,7 +50,6 @@ class Brick:
         self.contour = contour
         self.compactness = circumference**2 / (4 * np.pi *area)
         self.number = ''
-        self.edges = np.sqrt(np.sum(np.diff(np.vstack((np.intp(cv2.boxPoints(cv2.minAreaRect(contour))), np.intp(cv2.boxPoints(cv2.minAreaRect(self.contour)))[0])), axis=0)**2,axis=1))
 
         # Setze den Type basierend auf den Werten von area und circumference
         # if  576*0.9 <= area <= 576*1.1 and 96*0.9 <= circumference <= 96*1.1:
@@ -97,20 +95,5 @@ class Brick:
         distance, index = kdt_db.query(rgb_tuple)
         return names[index]
     
-    def __is_box_squared__(self, numbers, tolerance=1):
-        """
-        Checks if all numbers in the given list are approximately equal within a certain tolerance.
-
-        Args:
-            numbers (list): List of numbers to be checked.
-            tolerance (int, optional): Tolerance level for considering numbers as approximately equal. Defaults to 1.
-
-        Returns:
-            bool: True if all numbers are approximately equal, False otherwise.
-        """
-        # Check if the difference between each pair of consecutive numbers is within the tolerance
-        wurp = all(abs(numbers[i] - numbers[i+1]) <= tolerance for i in range(len(numbers)-1))
-        print(wurp)
-        return wurp
 
             

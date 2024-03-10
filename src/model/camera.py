@@ -23,7 +23,7 @@ class BrickDetector(object):
         self.processed_frame = None
         self.autofocus = 1
         self.focus = 0
-        self.brithness = 128
+        self.brightness = 128
         self.contrast = 128
         self.image_mode = ImageMode.live
         self.brick_list = ""
@@ -73,8 +73,8 @@ class BrickDetector(object):
             # if (576 * 0.9) <= area <= (576 * 1.1):
             if area > 500:  # Beispielgrenze für die Mindestgröße der Kontur
                 x, y, w, h =cv2.boundingRect(contour)
-                dominant_color = utils.dominant_color_from_roi(self.processed_frame, contour)
-                brick_list.append(Brick(area=area, circumference=circumfurence, color_code=dominant_color, original_image=self.org_frame, coordinates=(x,y,w,h), contour=contour))
+                # dominant_color = utils.dominant_color_from_roi(self.processed_frame, contour)
+                brick_list.append(Brick(area=area, circumference=circumfurence, color_code=(0,0,0), original_image=self.org_frame, coordinates=(x,y,w,h), contour=contour))
         return brick_list
     
     def loop(self):
@@ -102,6 +102,8 @@ class BrickDetector(object):
             if self.detect_flag:
                 if self.img_path != '':
                     self.org_frame = cv2.imread(self.img_path)
+                else:
+                    self.org_frame = self.org_frame_copy
                 self.org_frame = utils.resize_image(self.org_frame)
                 self.processed_frame, _, _ = utils.automatic_brithness_and_contrast(self.org_frame,1)
 
@@ -142,6 +144,7 @@ class BrickDetector(object):
                 print('Kein Bild')
                 return
             self.org_frame = utils.resize_image(self.org_frame)
+            self.org_frame_copy = self.org_frame.copy()
             self.processed_frame, _, _ = utils.automatic_brithness_and_contrast(self.org_frame,1)
 
             for (blur_kernel,morph_kernel,canny_min) in combinations:
@@ -186,7 +189,7 @@ class BrickDetector(object):
         If autofocus is enabled, it sets the autofocus property. If autofocus is disabled, it sets
         the focus level manually.
         """  
-        self.videoCapture.set(cv2.CAP_PROP_BRIGHTNESS,self.brithness)
+        self.videoCapture.set(cv2.CAP_PROP_BRIGHTNESS,self.brightness)
         self.videoCapture.set(cv2.CAP_PROP_CONTRAST,self.contrast)
         if (self.autofocus):
             self.videoCapture.set(cv2.CAP_PROP_AUTOFOCUS,1)
