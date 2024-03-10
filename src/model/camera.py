@@ -73,8 +73,8 @@ class BrickDetector(object):
             # if (576 * 0.9) <= area <= (576 * 1.1):
             if area > 500:  # Beispielgrenze für die Mindestgröße der Kontur
                 x, y, w, h =cv2.boundingRect(contour)
-                # dominant_color = utils.dominant_color_from_roi(self.processed_frame, contour)
-                brick_list.append(Brick(area=area, circumference=circumfurence, color_code=(0,0,0), original_image=self.org_frame, coordinates=(x,y,w,h), contour=contour))
+                dominant_color = utils.dominant_color_from_roi(self.processed_frame, contour)
+                brick_list.append(Brick(area=area, circumference=circumfurence, color_code=dominant_color, original_image=self.org_frame, coordinates=(x,y,w,h), contour=contour))
         return brick_list
     
     def loop(self):
